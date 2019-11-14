@@ -4,6 +4,8 @@
 # Note: Not optimal nor the prettiest
 # Based on pseudocode from CLRS book.
 
+# bellman ford handles negative weights
+
 # run: 'python3 bellman-ford.py'
 
 def bellmanFord(graph, source):
@@ -13,10 +15,13 @@ def bellmanFord(graph, source):
         for (k, v) in graph.verticies.items():
             for edge in v.edges:
                 relax(graph.verticies[edge.source], graph.verticies[edge.destination], edge.weight)
+    
+    
     # The following two nested loops represent pseudocode: for each edge u,v in graph
+    # Ensure no negative loops
     for (k, v) in graph.verticies.items():
         for edge in v.edges:
-            if graph.verticies[edge.source].cost > graph.verticies[edge.destination].cost + edge.weight:
+            if graph.verticies[edge.destination].cost > graph.verticies[edge.source].cost + edge.weight:
                 return False
     return True
 
@@ -75,8 +80,9 @@ if __name__ == '__main__':
     edges.append(Edge(1, 2, 3))
     edges.append(Edge(2, 5, 4))
     edges.append(Edge(2, 3, 4))
+    edges.append(Edge(3, 6, -10))  # bellman-ford test case: handle negatives
     edges.append(Edge(5, 4, 1))
-    edges.append(Edge(5, 6, 4))
+    edges.append(Edge(6, 5, 4))
 
     for edge in edges:
         graph.verticies[edge.source].addEdge(edge)
@@ -95,5 +101,5 @@ if __name__ == '__main__':
     path = printPath(graph.verticies, destination)
 
     # basic test
-    if path != [1, 2, 5, 4]:
+    if path != [1, 2, 3, 6, 5, 4]:
         raise Exception
