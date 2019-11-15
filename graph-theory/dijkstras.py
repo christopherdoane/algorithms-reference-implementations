@@ -13,7 +13,10 @@ def dijkstra(graph, source, destination):
     while len(queue) != 0:
         (key, u) = extractMin(queue) # greedy traversal strategy
         for edge in u.edges:
-            relax(u, graph.verticies[edge.destination], edge.weight)
+            if edge.destination in queue:
+                relax(u, queue[edge.destination], edge.weight)
+            else:
+                relax(u, calcedVerticies[edge.destination], edge.weight)
         calcedVerticies[key] = queue.pop(key)
     return calcedVerticies
     
